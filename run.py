@@ -6,9 +6,7 @@ import numpy as np
 import qn
 import tensorflow as tf
 
-
-from policyGradient import observation, target, action, \
-action_prob, train_value, train_action #gradient
+import policyGradient as p
 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
@@ -19,20 +17,22 @@ env = gym.make('CartPole-v0')
 #     shutil.rmtree(logDir)
 # env = wrappers.Monitor(env, logDir)
 
-gamma = 0.9
-batch_size = 10
+gamma = 0.95
 keep_size = 20
+batch_size = 10
 
-for i_episode in range(500):
+for i_episode in range(1000):
     obs = env.reset()
     memory = []
     for t in range(500):
         #env.render()
         #print(observation)
-        action_p = sess.run(action_prob, feed_dict={observation:[obs]})
-        a = 0 if action_p > np.random.rand() else 1
-        obs, reward, done, info = env.step(a)
-        memory.append([obs,a,reward])
+        action_prob = sess.run(p.action_prob,
+        feed_dict={p.observation:[obs]})
+        action = 0 if action_prob > np.random.rand() else 1
+        newObs, reward, done, info = env.step(action)
+        memory.append([obs,action,reward])
+        obs = newObs
         if done:
             print("{}th episode finished after {} timesteps"\
             .format(i_episode, t+1))
@@ -50,9 +50,9 @@ for i_episode in range(500):
         obsChunk = np.stack(obsChunk)
         targetChunk = [[x] for x in targetChunk]
         actionChunk = [[1,0] if x==0 else [0,1] for x in actionChunk]
-        sess.run(train_action,feed_dict={observation:obsChunk,
-        action:actionChunk, target:targetChunk})
-        # sess.run(gradient,feed_dict={observation:obsChunk,
-        # action:actionChunk, target:targetChunk})
-        sess.run(train_value,feed_dict={observation:obsChunk,
-        target:targetChunk})
+        sess.run(p.train_action,feed_dict={p.observation:obsChunk,
+        p.action:actionChunk, p.target:targetChunk})
+        # sess.run(p.mse,feed_dict={p.observation:obsChunk,
+        # p.target:targetChunk})
+        sess.run(p.train_value,feed_dict={p.observation:obsChunk,
+        p.target:targetChunk})
