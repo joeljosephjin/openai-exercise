@@ -12,10 +12,10 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 env = gym.make('CartPole-v0')
-# logDir = 'tmp/cartpole-experiment-1'
-# if os.path.isdir(logDir):
-#     shutil.rmtree(logDir)
-# env = wrappers.Monitor(env, logDir)
+logDir = 'tmp/cartpole-experiment-AdamOptimizer'
+if os.path.isdir(logDir):
+    shutil.rmtree(logDir)
+env = wrappers.Monitor(env, logDir)
 
 gamma = 0.95
 keep_size = 20
@@ -56,3 +56,5 @@ for i_episode in range(1000):
         # p.target:targetChunk})
         sess.run(p.train_value,feed_dict={p.observation:obsChunk,
         p.target:targetChunk})
+
+env.close()

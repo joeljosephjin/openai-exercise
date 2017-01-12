@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-value_lr = 0.01
+value_lr = 0.1
 target_lr = 0.1
 
 with tf.name_scope('input'):
@@ -21,7 +21,6 @@ with tf.name_scope('value_net'):
     biases_v2 = tf.Variable(tf.constant(0.1), name='biases_v2')
     value = tf.matmul(activation_v1, weights_v2) + biases_v2
     mse = tf.contrib.losses.mean_squared_error(value, target)
-    mse = tf.Print(mse,[mse], message='print: ', summarize=5)
     train_value = tf.train.AdamOptimizer(learning_rate=value_lr)\
     .minimize(mse)
 
@@ -63,7 +62,6 @@ with tf.name_scope('action_net'):
         axis=0, keep_dims=True)
         gradient = tf.transpose(gradient)
         #train_action = tf.Print(gradient,[gradient,weights_a1], message='print: ', summarize=5)
-        train_action = weights_a1.assign(weights_a1+target_lr*gradient)
-        #gradient = tf.Print(gradient,[gradient,weights_a1], message='print: ', summarize=5)
-        # train_action = tf.train.AdamOptimizer(learning_rate=target_lr)\
-        # .apply_gradients([(gradient,weights_a1)])
+        #train_action = weights_a1.assign(weights_a1+target_lr*gradient)
+        train_action = tf.train.AdamOptimizer(learning_rate=target_lr)\
+        .apply_gradients([(-gradient,weights_a1)])
