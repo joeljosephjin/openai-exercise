@@ -46,7 +46,7 @@ with tf.name_scope('action_net'):
         # None x 1 * None x 4
         log_gradient_weights = tf.multiply(sigmoid_derivative_by_action, observation)
 
-        ## could use compute_gradients to calculate gradients automatically
+        ## could have used tf.Optimizer.compute_gradients to calculate gradients automatically
         # logGradient0 = tf.train.Optimizer\
         # .compute_gradients(tf.log(action_prob),weights_a1)
         # logGradient1 = tf.train.Optimizer\

@@ -6,22 +6,23 @@ import numpy as np
 import qn
 import tensorflow as tf
 
-import policyGradient as p
+#import policyGradient as p
+import policyGradient2 as p
 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 env = gym.make('CartPole-v0')
-logDir = 'tmp/cartpole-experiment-AdamOptimizer'
-if os.path.isdir(logDir):
-    shutil.rmtree(logDir)
-env = wrappers.Monitor(env, logDir)
+# logDir = 'tmp/cartpole-experiment-simple'
+# if os.path.isdir(logDir):
+#     shutil.rmtree(logDir)
+# env = wrappers.Monitor(env, logDir)
 
-gamma = 0.95
+gamma = 0.5
 keep_size = 20
 batch_size = 10
 
-for i_episode in range(1000):
+for i_episode in range(500):
     obs = env.reset()
     memory = []
     for t in range(500):
@@ -29,6 +30,7 @@ for i_episode in range(1000):
         #print(observation)
         action_prob = sess.run(p.action_prob,
         feed_dict={p.observation:[obs]})
+        #action = 1-int(np.round(action_prob))
         action = 0 if action_prob > np.random.rand() else 1
         newObs, reward, done, info = env.step(action)
         memory.append([obs,action,reward])
