@@ -7,10 +7,9 @@ import qn
 import tensorflow as tf
 import pickle
 
-# import policyGradient as p
-#
-# sess = tf.InteractiveSession()
-# sess.run(tf.global_variables_initializer())
+from pymongo import MongoClient
+client = MongoClient()
+coll = client['openai']['mountainCar']
 
 env = gym.make('MountainCar-v0')
 # logDir = 'tmp/cartpole-experiment-simple'
@@ -23,7 +22,7 @@ keep_size = 200
 batch_size = 20
 
 total = []
-for i_episode in range(int(5000)):
+for i_episode in range(int(3)):
     obs = env.reset()
     memory = []
     for t in range(int(1e10)):
@@ -37,7 +36,7 @@ for i_episode in range(int(5000)):
         #action = 1-int(np.round(action_prob))
         action = env.action_space.sample()
         newObs, reward, done, info = env.step(action)
-        memory.append([obs,action,reward])
+        memory.append([list(obs),action,reward])
         obs = newObs
         if done:
             print("{}th episode finished after {} timesteps"\
@@ -45,8 +44,8 @@ for i_episode in range(int(5000)):
             break
     total.append(memory)
 
-with open('mountain-car.pkl','wb') as mf:
-    pickle.dump(total,mf)
+#with open('data/mountain-car.pkl','wb') as mf:
+    #pickle.dump(total,mf)
     # for i, unit in enumerate(memory):
     #     G = np.sum([gamma**j*item[2] for j,item in enumerate(memory[i:])])
     #     unit.append(G)
