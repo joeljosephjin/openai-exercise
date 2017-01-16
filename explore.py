@@ -7,9 +7,6 @@ import qn
 import tensorflow as tf
 import pickle
 
-from pymongo import MongoClient
-client = MongoClient()
-coll = client['openai']['mountainCar']
 
 env = gym.make('MountainCar-v0')
 # logDir = 'tmp/cartpole-experiment-simple'
@@ -18,14 +15,14 @@ env = gym.make('MountainCar-v0')
 # env = wrappers.Monitor(env, logDir)
 
 gamma = 1
-keep_size = 200
+keep_size = 5000
 batch_size = 20
 
 total = []
-for i_episode in range(int(3)):
+for i_episode in range(int(2500)):
     obs = env.reset()
     memory = []
-    for t in range(int(1e10)):
+    for t in range(int(1e11)):
         #env.render()
         #print(observation)
         #qn.printEvery(100,t)
@@ -42,10 +39,14 @@ for i_episode in range(int(3)):
             print("{}th episode finished after {} timesteps"\
             .format(i_episode, t+1))
             break
+
+    if len(memory) > keep_size:
+        memory = memory[-keep_size:]
+
     total.append(memory)
 
-#with open('data/mountain-car.pkl','wb') as mf:
-    #pickle.dump(total,mf)
+with open('data/mountain-car-1.pkl','wb') as mf:
+    pickle.dump(total,mf)
     # for i, unit in enumerate(memory):
     #     G = np.sum([gamma**j*item[2] for j,item in enumerate(memory[i:])])
     #     unit.append(G)

@@ -13,11 +13,13 @@
 # .minimize(mse)
 
 from sklearn.linear_model import ElasticNet
+import pickle
+import numpy as np
 
-with open('data/mountain-car.pkl','rb') as mf:
+with open('data/mountain-car-1.pkl','rb') as mf:
     total = pickle.load(mf)
 
-keep_size = 500
+keep_size = 1000
 gamma = 0.98
 x = [[],[],[]]
 y = [[],[],[]]
@@ -37,5 +39,8 @@ for memory in total:
 
 
 models = [ElasticNet(),ElasticNet(),ElasticNet()]
-for enet in models:
-    enet.fit(x,y)
+for i, enet in enumerate(models):
+    enet.fit(x[i],y[i])
+    
+with open('models/mountain-car-simple.pkl','wb') as mf:
+    pickle.dump(models,mf)

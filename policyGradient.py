@@ -31,7 +31,7 @@ with tf.name_scope('action_net'):
     pa_a1 = tf.matmul(observation, w_a1) + b_a1
     a_a1 = tf.nn.relu(pa_a1, name='a_a1')
 
-    w_a2 = tf.Variable(tf.truncated_normal([6,3], stddev=0.1),
+    w_a2 = tf.Variable(tf.truncated_normal([6,3], stddev=1),
     name='w_a2')
     b_a2 = tf.Variable(tf.constant(0.1, shape=[3]), name='b_a2')
     pa_a2 = tf.matmul(a_a1, w_a2) + b_a2
