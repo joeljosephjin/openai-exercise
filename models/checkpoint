@@ -1,0 +1,3 @@
+model_checkpoint_path: "moutainCar-pretrain-10"
+all_model_checkpoint_paths: "moutainCar-pretrain-10.ckpt"
+all_model_checkpoint_paths: "moutainCar-pretrain-10"
