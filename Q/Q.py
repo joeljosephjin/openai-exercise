@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-q_lr = 0.1
+q_lr = 0.01
 
 with tf.name_scope('input'):
     observation = tf.placeholder(tf.float32, [None,6], 'observation')

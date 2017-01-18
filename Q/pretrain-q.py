@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import util as u
 #
 # with open('data/mountain-car-1.pkl','rb') as mf:
 #     total = pickle.load(mf)
@@ -23,7 +24,7 @@ import numpy as np
 with open('data/train.pkl','rb') as mf:
     train = pickle.load(mf)
 
-
+#%%
 import tensorflow as tf
 import Q as q
 import qn
@@ -35,32 +36,41 @@ sess.run(tf.global_variables_initializer())
 
 mses = []
 batch_size = 50
-for memory in train[:10]:
-    for chunk in qn.chunks(memory,batch_size):
-        obsChunk, actionChunk, _, targetChunk = list(zip(*chunk))
-        tObs = np.zeros((len(obsChunk),len(obsChunk[0])*3))
-        for i,obs in enumerate(obsChunk):
-            action = actionChunk[i]
-            tObs[i,action*2:action*2+2] = obs
-        targetChunk = [[x] for x in targetChunk]
-        mses.append(sess.run(q.mse,feed_dict={q.observation:tObs,
-                                           q.target:targetChunk}))
-        sess.run(q.train_value,feed_dict={q.observation:tObs,
+for memory in train[:100]:
+    tObs = np.zeros((len(memory),len(memory[0][0])*3))
+    rewards = []
+    for i, item in enumerate(memory):
+        rewards.append(item[2])
+        action = item[1]
+        tObs[i,action*2:action*2+2] = item[0]
+    q_val = sess.run(q.value,feed_dict={q.observation:tObs})
+    targets = u.getMC(rewards)
+
+    for chunk in qn.chunks(range(len(memory)),batch_size):
+        obsChunk = tObs[chunk,:]
+        targetChunk = np.array(targets)[chunk]
+
+        mses.append(sess.run(q.mse,feed_dict={q.observation:obsChunk,
+        q.target:targetChunk}))
+        sess.run(q.train_value,feed_dict={q.observation:obsChunk,
         q.target:targetChunk})
 
-saver.save(sess,'models/moutainCar-pretrain-10')
+
 
 import matplotlib.pyplot as plt
 plt.plot(mses)
-
-
+plt.figure()
+plt.plot(q_val[:,0][-200:])
+#%%
+#saver.save(sess,'models/moutainCar-pretrain-10')
+#%%
 import gym
 env = gym.make('MountainCar-v0')
 
 for i_episode in range(500):
     obs = env.reset()
     for t in range(int(1e10)):
-        #env.render()
+        env.render()
         #print(obs)
         #qn.printEvery(1000,t)
 

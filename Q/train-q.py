@@ -15,16 +15,18 @@ sess.run(tf.global_variables_initializer())
 saver.restore(sess, 'models/moutainCar-pretrain-10')
 
 env = gym.make('MountainCar-v0')
-# logDir = 'tmp/cartpole-experiment-simple'
+# logDir = 'tmp/MountainCar-v0-mc'
 # if os.path.isdir(logDir):
 #     shutil.rmtree(logDir)
 # env = wrappers.Monitor(env, logDir)
 
 keep_size = 2000
+#gamma = 0.99
 epsilonUp = 50
 epsilonDn = 100
+batch_size = 50
 
-for i_episode in range(int(2e3)):
+for i_episode in range(int(3e3)):
     obs = env.reset()
     memory = []
     for t in range(int(1e10)):
@@ -56,12 +58,14 @@ for i_episode in range(int(2e3)):
         G = np.sum([item[2] for j,item in enumerate(memory[i:])])
         unit.append(G)
 
-    if i_episode < 1000:
-        batch_size = 50
-    elif i_episode < 1500:
-        batch_size = 10
-    else:
-        batch_size = 5
+    # if i_episode < 1500:
+    #     batch_size = 50
+    # elif i_episode < 2000:
+    #     batch_size = 20
+    # elif i_episode < 3000:
+    #     batch_size = 5
+    # else:
+    #     batch_size = 2
 
     for chunk in qn.chunks(memory,batch_size):
         obsChunk, actionChunk, _, targetChunk = list(zip(*chunk))
