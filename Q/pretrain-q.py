@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-import util as u
+import rl as u
 #
 # with open('data/mountain-car-1.pkl','rb') as mf:
 #     total = pickle.load(mf)
@@ -21,12 +21,13 @@ import util as u
 # with open('data/train.pkl','wb') as mf:
 #      pickle.dump(train,mf)
 
-with open('data/train.pkl','rb') as mf:
+with open('../data/train.pkl','rb') as mf:
     train = pickle.load(mf)
 
 #%%
 import tensorflow as tf
-import Q as q
+#import Q as q
+import Q2 as q
 import qn
 
 
@@ -62,7 +63,7 @@ plt.plot(mses)
 plt.figure()
 plt.plot(q_val[:,0][-200:])
 #%%
-#saver.save(sess,'models/moutainCar-pretrain-10')
+saver.save(sess,'../models/moutainCar-pretrain-q2')
 #%%
 import gym
 env = gym.make('MountainCar-v0')

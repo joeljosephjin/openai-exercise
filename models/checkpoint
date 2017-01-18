@@ -1,2 +1,2 @@
-model_checkpoint_path: "moutainCar-pretrain-td"
-all_model_checkpoint_paths: "moutainCar-pretrain-td"
+model_checkpoint_path: "moutainCar-pretrain-q2"
+all_model_checkpoint_paths: "moutainCar-pretrain-q2"

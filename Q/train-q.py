@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
-import Q as q
+#import Q as q
+import Q2 as q
 import qn
 
 import gym
@@ -12,7 +13,7 @@ saver = tf.train.Saver()
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
-saver.restore(sess, 'models/moutainCar-pretrain-10')
+saver.restore(sess, '../models/moutainCar-pretrain-q2')
 
 env = gym.make('MountainCar-v0')
 # logDir = 'tmp/MountainCar-v0-mc'
