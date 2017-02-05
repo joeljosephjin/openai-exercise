@@ -3,3 +3,5 @@
 *.R
 tmp/*
 data/*
+__pycache__
+models/*
