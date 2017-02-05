@@ -1,4 +1,5 @@
 # Policy gradient solution with MC return
+# to run this script 'train.pkl' must be generated using generateData.py first
 
 import pickle
 import numpy as np
