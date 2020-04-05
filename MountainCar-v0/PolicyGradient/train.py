@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from random import shuffle
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import network as q
 
 with open('train.pkl','rb') as mf:
